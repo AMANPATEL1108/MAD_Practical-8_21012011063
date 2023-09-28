@@ -9,8 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.TextClock
+import android.widget.Toast
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
@@ -30,8 +33,13 @@ class MainActivity : AppCompatActivity() {
 
         addAlarm.setOnClickListener{
 
-            TimePickerDialog(this,{tp,hour,minute -> setAlarmTime(hour, minute)},Calendar.HOUR,Calendar.MINUTE,false).show()
-
+            TimePickerDialog(this,{tp,hour,minute -> setAlarmTime(hour, minute)},Calendar.getInstance().get(Calendar.HOUR),Calendar.getInstance().get(Calendar.MINUTE),false).show()
+            card.visibility=View.VISIBLE
+        }
+        val cancelAlarm : MaterialButton=findViewById(R.id.cancel)
+        cancelAlarm.setOnClickListener{
+            stop()
+            card.visibility=View.GONE
         }
     }
 
@@ -54,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     fun setAlarm(militime : Long , action : String){
         val intentalarm=Intent(applicationContext,AlarmBroadcastReceiver::class.java)
         intentalarm.putExtra(AlarmBroadcastReceiver.ALARMKEY,action)
-        val pendingintent=PendingIntent.getBroadcast(applicationContext,4356,intentalarm,PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingintent=PendingIntent.getBroadcast(applicationContext,4356,intentalarm,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val alarmmanager=getSystemService(ALARM_SERVICE) as AlarmManager
         if (action==AlarmBroadcastReceiver.ALARMSTART){
             alarmmanager.setExact(AlarmManager.RTC_WAKEUP,militime,pendingintent)
@@ -63,6 +71,7 @@ class MainActivity : AppCompatActivity() {
             alarmmanager.cancel(pendingintent)
             sendBroadcast(intentalarm)
         }
+
     }
 
 }

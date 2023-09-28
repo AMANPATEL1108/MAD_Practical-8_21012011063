@@ -14,13 +14,13 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 
-        if (intent!=null){
+        if (intent != null){
             val data = intent.getStringExtra(ALARMKEY)
             if (data!=null){
 
                 val intentservice=Intent(context,AlarmService::class.java)
 
-                if (data== ALARMSTART){
+                if (data == ALARMSTART){
                     context.startService(intentservice)
 
                 }
